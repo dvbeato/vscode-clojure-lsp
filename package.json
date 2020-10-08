@@ -1,27 +1,23 @@
 {
-  "name": "clojure-lsp",
-  "displayName": "clojure-lsp",
+  "name": "vscode-clojure-lsp",
+  "displayName": "vscode-clojure-lsp",
   "description": "Clojure Language Server Client",
   "version": "1.0.0",
   "publisher": "dvbeato",
+  "repository": {
+    "url": "https://github.com/dvbeato/vscode-clojure-lsp"
+  },
   "engines": {
     "vscode": "^1.22.0"
   },
   "categories": [
-    "Other"
+    "Clojure",
+    "LSP"
   ],
   "activationEvents": [
     "onLanguage:clojure"
   ],
   "main": "./extension",
-  "contributes": {
-    "commands": [
-      {
-        "command": "extension.sayHello",
-        "title": "Hello World"
-      }
-    ]
-  },
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "node ./node_modules/vscode/bin/test"

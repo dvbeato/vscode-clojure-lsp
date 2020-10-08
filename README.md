@@ -1,11 +1,7 @@
-# client-vscode
+# vscode-clojure-lsp
 
-## Features
+it's a try to evolve client-vscode POC from [https://github.com/snoe/clojure-lsp](https://github.com/snoe/clojure-lsp)
 
-## Requirements
+this plugin will give [extra capabilities](https://github.com/snoe/clojure-lsp#capabilities) to your clojure development without the need to start a calva REPL.
 
-## Extension Settings
-
-## Known Issues
-
-## Release Notes
+It's not a replacement for calva, but just a complement.
