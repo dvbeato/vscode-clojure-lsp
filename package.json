@@ -5,10 +5,11 @@
   "version": "1.0.0",
   "publisher": "dvbeato",
   "repository": {
+    "type": "git",
     "url": "https://github.com/dvbeato/vscode-clojure-lsp"
   },
   "engines": {
-    "vscode": "^1.22.0"
+    "vscode": "^1.43.0"
   },
   "categories": [
     "Clojure",
@@ -17,20 +18,25 @@
   "activationEvents": [
     "onLanguage:clojure"
   ],
-  "main": "./extension",
+  "main": "./out/extension",
   "scripts": {
-    "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "node ./node_modules/vscode/bin/test",
-    "install-extension": "./bin/install-extension.sh"
-  },
-  "devDependencies": {
-    "typescript": "^2.6.1",
-    "vscode": "^1.1.6",
-    "eslint": "^4.11.0",
-    "@types/node": "^7.0.43",
-    "@types/mocha": "^2.2.42"
+    "install-extension": "./bin/install-extension.sh",
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "lint": "eslint . --ext .ts,.tsx",
+    "watch": "tsc -watch -p ./"
   },
   "dependencies": {
     "vscode-languageclient": "^4.1.3"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.0",
+    "@typescript-eslint/eslint-plugin": "^3.0.2",
+    "@typescript-eslint/parser": "^3.0.2",
+    "eslint": "^7.1.0",
+    "typescript": "3.8.3",
+    "@types/vscode": "1.43.0",
+    "vscode-test": "^1.3.0"
   }
 }
