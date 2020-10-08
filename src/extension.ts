@@ -1,15 +1,21 @@
 import * as lsp from "vscode-languageclient";
 import * as vscode from "vscode";
- 
-let jarEventEmitter = new vscode.EventEmitter();
-let contentsRequest = new lsp.RequestType('clojure/dependencyContents'); 
+
+class ClojureUri {
+  uri: string
+};
+
+let jarEventEmitter :vscode.EventEmitter<vscode.Uri> = new vscode.EventEmitter();
+let contentsRequest = new lsp.RequestType<ClojureUri, string, string, string>('clojure/dependencyContents'); 
 let client :lsp.LanguageClient;
 
 export function activate(context: vscode.ExtensionContext) {
 
   let runCommnad :lsp.Executable = { command: "bash", args: ["-c", "clojure-lsp"] };
+  let debugCommnad :lsp.Executable = { command: "bash", args: ["-c", "clojure-lsp"] };
   let serverOptions :lsp.ServerOptions = {
-    run: runCommnad
+    run: runCommnad,
+    debug: debugCommnad
   };
 
   // Options to control the language client
@@ -28,35 +34,34 @@ export function activate(context: vscode.ExtensionContext) {
   let commandId = "vscode-clojure-lsp-start";
 
 	// create a new status bar item that we can now manage
-	let myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-	myStatusBarItem.command = commandId;
-	context.subscriptions.push(myStatusBarItem);
+	let clientStatus : vscode.StatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+	clientStatus.command = commandId;
+	context.subscriptions.push(clientStatus);
 
   client = new lsp.LanguageClient('clojure-lsp', 'Clojure Language Client', serverOptions, clientOptions, false)
 
-  let rnfn = () => {
-      myStatusBarItem.text = "Starting LSP Clojure Server";
-      myStatusBarItem.show();
+  let startLSPClient = () => {
+      clientStatus.text = "Starting LSP Clojure Server";
+      clientStatus.color = "#ff5e00";
+      clientStatus.show();
       return client.start();
     };
 
     client.onReady().then(() => {
-      myStatusBarItem.text = "Clojure LSP Ready";
-      myStatusBarItem.show();
+      clientStatus.text = "Clojure LSP Ready";
+      clientStatus.color = "#0F0";
+      clientStatus.show();
     })
 
-  context.subscriptions.push(rnfn());
+  context.subscriptions.push(startLSPClient());
 
-  //     myStatusBarItem.text = "Starting LSP Clojure Server";
-  //     myStatusBarItem.show();
-  // context.subscriptions.push(languageClient.start());
-
-  let provider = {
+  let provider: vscode.TextDocumentContentProvider = {
     onDidChange: jarEventEmitter.event,
-    provideTextDocumentContent: (uri, token) => {
-      return client.sendRequest(contentsRequest, { uri: decodeURIComponent(uri.toString()) }, token).then((v) => {
-        return v || '';
-      });
+    provideTextDocumentContent: (uri: vscode.Uri, token: vscode.CancellationToken) => {
+      return client.sendRequest(contentsRequest, { uri: decodeURIComponent(uri.toString()) }, token)
+        .then((v) => {
+          return v || '';
+        });
     }
   };
   context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('jar', provider));
